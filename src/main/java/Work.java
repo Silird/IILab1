@@ -5,7 +5,7 @@ public class Work {
     private boolean step;
     private int iteration;
     private List<Cell> used = new ArrayList<Cell>();
-    private Queue<Cell> queue = new PriorityQueue<Cell>();
+    private Queue<Cell> queue = new LinkedList<Cell>();
     private Cell target;
 
     public Work(Cell target, boolean step) {
@@ -20,15 +20,17 @@ public class Work {
     public void Start(Cell start) {
         queue.add(start);
         iteration = 0;
-        Open();
+        while (true) {
+            Open();
+        }
     }
 
     private void Open() {
         Cell currentCell = queue.poll();
         used.add(currentCell);
         iteration++;
+        System.out.println("-------------------------Итерация № " + iteration + "-------------------------------");
         if (step) {
-            System.out.println("-------------------------Итерация № " + iteration + "-------------------------------");
             System.out.println("Раскрывается вершина:\n");
             currentCell.Print();
 
@@ -53,7 +55,6 @@ public class Work {
                 ex.printStackTrace();
             }
         }
-        Open();
     }
 
     private void Add(Cell cell) {
@@ -93,6 +94,7 @@ public class Work {
             tmp = tmp.getParent();
         }
         System.out.println("\nНайдено решение в " + cell.getDeep() + " шаг/а/ов");
+        System.out.println("За " + iteration + " итераций");
         System.out.println("Путь:\n");
 
         while (!path.isEmpty()) {
