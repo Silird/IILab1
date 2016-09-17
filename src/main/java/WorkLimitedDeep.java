@@ -1,60 +1,74 @@
 import java.io.IOException;
 import java.util.*;
 
-public class Work {
+public class WorkLimitedDeep {
     private boolean step;
     private int iteration;
+    private int limit;
     private List<Cell> used = new ArrayList<Cell>();
-    private Queue<Cell> queue = new LinkedList<Cell>();
+    private Stack<Cell> queue = new Stack<Cell>();
     private Cell target;
 
-    public Work(Cell target, boolean step) {
+    public WorkLimitedDeep(Cell target, boolean step, int limit) {
         this.target = target;
         this.step = step;
+        this.limit = limit;
     }
 
-    public Work(Cell target) {
-        this(target, false);
+    public WorkLimitedDeep(Cell target, int limit) {
+        this(target, false, limit);
     }
 
     public void Start(Cell start) {
         queue.add(start);
         iteration = 0;
-        while (true) {
-            Open();
+        boolean cont = true;
+        while (cont) {
+            cont = Open();
         }
+        System.out.println("Решения не найдено");
     }
 
-    private void Open() {
-        Cell currentCell = queue.poll();
-        used.add(currentCell);
-        iteration++;
-        System.out.println("-------------------------Итерация № " + iteration + "-------------------------------");
-        if (step) {
-            System.out.println("Раскрывается вершина:\n");
-            currentCell.Print();
+    private boolean Open() {
+        if (!queue.isEmpty()) {
+            Cell currentCell = queue.pop();
+            used.add(currentCell);
+            iteration++;
+            System.out.println("-------------------------Итерация № " + iteration + "-------------------------------");
+            if (step) {
+                System.out.println("Раскрывается вершина:\n");
+                currentCell.Print();
 
-            System.out.println("\nВновь открытые:\n");
-        }
-        Add(currentCell.Move(Cell.UP));
-        Add(currentCell.Move(Cell.RIGHT));
-        Add(currentCell.Move(Cell.DOWN));
-        Add(currentCell.Move(Cell.LEFT));
-
-        PrintQueue();
-
-        if (step) {
-            System.out.println("\nСледующая для открытия:\n");
-            queue.peek().Print();
-
-            try {
-                System.out.println("\nНажмите Enter для продолжения");
-                System.in.read();
+                if (currentCell.getDeep() > limit) {
+                    System.out.println("\nВновь открытые:\n");
+                }
+                else {
+                    System.out.println("\nВершина не раскрывается, достигнут предел\n");
+                }
             }
-            catch (IOException ex) {
-                ex.printStackTrace();
+            if (currentCell.getDeep() <= limit) {
+                Add(currentCell.Move(Cell.UP));
+                Add(currentCell.Move(Cell.RIGHT));
+                Add(currentCell.Move(Cell.DOWN));
+                Add(currentCell.Move(Cell.LEFT));
             }
+
+            PrintQueue();
+
+            if (step) {
+                System.out.println("\nСледующая для открытия:\n");
+                queue.peek().Print();
+
+                try {
+                    System.out.println("\nНажмите Enter для продолжения");
+                    System.in.read();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return true;
         }
+        return false;
     }
 
     private void Add(Cell cell) {
@@ -75,7 +89,7 @@ public class Work {
 
     private void PrintQueue() {
         if (step) {
-            System.out.println("Вершины, ожидающие открытия:\n");
+            System.out.println("\nВершины, ожидающие открытия:\n");
             for (Cell cell : queue) {
                 cell.Print();
                 System.out.println();
