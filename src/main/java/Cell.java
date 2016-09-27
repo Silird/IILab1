@@ -117,9 +117,11 @@ public class Cell implements Comparable<Cell>{
     }
 
     public boolean equals(Object object) {
+        /*
         if (this == object) {
             return true;
         }
+        */
         if ((object == null) || (this.getClass() != object.getClass())) {
             return false;
         }
@@ -133,6 +135,14 @@ public class Cell implements Comparable<Cell>{
                 }
             }
         }
+
+        /*
+        System.out.println("=============================================");
+        this.Print();
+        System.out.println();
+        ((Cell) object).Print();
+        System.out.println("=============================================");
+        */
 
         return true;
     }

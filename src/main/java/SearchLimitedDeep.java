@@ -1,7 +1,7 @@
 import java.io.IOException;
 import java.util.*;
 
-public class WorkLimitedDeep {
+public class SearchLimitedDeep {
     private boolean step;
     private int iteration;
     private int limit;
@@ -9,13 +9,13 @@ public class WorkLimitedDeep {
     private Stack<Cell> queue = new Stack<Cell>();
     private Cell target;
 
-    public WorkLimitedDeep(Cell target, boolean step, int limit) {
+    public SearchLimitedDeep(Cell target, boolean step, int limit) {
         this.target = target;
         this.step = step;
         this.limit = limit;
     }
 
-    public WorkLimitedDeep(Cell target, int limit) {
+    public SearchLimitedDeep(Cell target, int limit) {
         this(target, false, limit);
     }
 
@@ -26,7 +26,7 @@ public class WorkLimitedDeep {
         while (cont) {
             cont = Open();
         }
-        System.out.println("Решения не найдено");
+        System.out.println("Решения не найдено за " + iteration + " итераций");
     }
 
     private boolean Open() {
@@ -34,7 +34,9 @@ public class WorkLimitedDeep {
             Cell currentCell = queue.pop();
             used.add(currentCell);
             iteration++;
-            System.out.println("-------------------------Итерация № " + iteration + "-------------------------------");
+            if (iteration%1000 == 0) {
+                System.out.println("-------------------------Итерация № " + iteration + "-------------------------------");
+            }
             if (step) {
                 System.out.println("Раскрывается вершина:\n");
                 currentCell.Print();

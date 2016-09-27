@@ -1,19 +1,19 @@
 import java.io.IOException;
 import java.util.*;
 
-public class WorkWidth {
+public class SearchWidth {
     private boolean step;
     private int iteration;
     private List<Cell> used = new ArrayList<Cell>();
     private Queue<Cell> queue = new LinkedList<Cell>();
     private Cell target;
 
-    public WorkWidth(Cell target, boolean step) {
+    public SearchWidth(Cell target, boolean step) {
         this.target = target;
         this.step = step;
     }
 
-    public WorkWidth(Cell target) {
+    public SearchWidth(Cell target) {
         this(target, false);
     }
 
@@ -32,7 +32,9 @@ public class WorkWidth {
             Cell currentCell = queue.poll();
             used.add(currentCell);
             iteration++;
-            System.out.println("-------------------------Итерация № " + iteration + "-------------------------------");
+            if (iteration%1000 == 0) {
+                System.out.println("-------------------------Итерация № " + iteration + "-------------------------------");
+            }
             if (step) {
                 System.out.println("Раскрывается вершина:\n");
                 currentCell.Print();
