@@ -1,4 +1,4 @@
-public class Cell implements Comparable<Cell>{
+public class State implements Comparable<State>{
     public final static int UP = 0;
     public final static int RIGHT = 1;
     public final static int DOWN = 2;
@@ -8,75 +8,75 @@ public class Cell implements Comparable<Cell>{
 
     public final static int EMPTY = 0;
 
-    private int[][] inCell = new int[SIZE][SIZE];
-    private Cell parent;
+    private int[][] vertex = new int[SIZE][SIZE];
+    private State parent;
     private int deep;
 
-    public Cell(int c00, int c01, int c02,
-                int c10, int c11, int c12,
-                int c20, int c21, int c22) {
-        inCell[0][0] = c00;
-        inCell[0][1] = c01;
-        inCell[0][2] = c02;
-        inCell[1][0] = c10;
-        inCell[1][1] = c11;
-        inCell[1][2] = c12;
-        inCell[2][0] = c20;
-        inCell[2][1] = c21;
-        inCell[2][2] = c22;
+    public State(int c00, int c01, int c02,
+                 int c10, int c11, int c12,
+                 int c20, int c21, int c22) {
+        vertex[0][0] = c00;
+        vertex[0][1] = c01;
+        vertex[0][2] = c02;
+        vertex[1][0] = c10;
+        vertex[1][1] = c11;
+        vertex[1][2] = c12;
+        vertex[2][0] = c20;
+        vertex[2][1] = c21;
+        vertex[2][2] = c22;
 
         parent = null;
         deep = 0;
     }
 
-    public Cell(Cell cell) {
-        //inCell = cell.getInCell();
+    public State(State state) {
+        //vertex = cell.getVertex();
 
-        int[][] tmp = cell.getInCell();
+        int[][] tmp = state.getVertex();
 
         for (int i = 0; i < SIZE; i++) {
-            System.arraycopy(tmp[i], 0, inCell[i], 0, SIZE);
+            System.arraycopy(tmp[i], 0, vertex[i], 0, SIZE);
         }
 
 
-        parent = cell;
-        deep = cell.getDeep() + 1;
+        parent = state;
+        deep = state.getDeep() + 1;
     }
 
-    public Cell Move(int direction) {
-        Cell result = new Cell(this);
+    public State Move(int direction) {
+        State result = new State(this);
         Position empty = this.getEmpty();
         switch (direction) {
             case (UP) : {
                 if (empty.getY() == 0) {
                     return null;
                 }
-                result.getInCell()[empty.getY()][empty.getX()] = result.getInCell()[empty.getY() - 1][empty.getX()];
-                result.getInCell()[empty.getY() - 1][empty.getX()] = EMPTY;
+                result.getVertex()[empty.getY()][empty.getX()] = result.getVertex()[empty.getY() - 1][empty.getX()];
+                result.getVertex()[empty.getY() - 1][empty.getX()] = EMPTY;
                 break;
             }
             case (RIGHT) : {
                 if (empty.getX() == (SIZE - 1)) {
                     return null;
                 }
-                result.getInCell()[empty.getY()][empty.getX()] = result.getInCell()[empty.getY()][empty.getX() + 1];
-                result.getInCell()[empty.getY()][empty.getX() + 1] = EMPTY;
+                result.getVertex()[empty.getY()][empty.getX()] = result.getVertex()[empty.getY()][empty.getX() + 1];
+                result.getVertex()[empty.getY()][empty.getX() + 1] = EMPTY;
                 break;
             }
             case (DOWN) : {
                 if (empty.getY() == (SIZE - 1)) {
                     return null;
                 }
-                result.getInCell()[empty.getY()][empty.getX()] = result.getInCell()[empty.getY() + 1][empty.getX()];
-                result.getInCell()[empty.getY() + 1][empty.getX()] = EMPTY;
+                result.getVertex()[empty.getY()][empty.getX()] = result.getVertex()[empty.getY() + 1][empty.getX()];
+                result.getVertex()[empty.getY() + 1][empty.getX()] = EMPTY;
                 break;
             }
             case (LEFT) : {
                 if (empty.getX() == 0) {
                     return null;
                 }
-                result.getInCell()[empty.getY()][empty.getX()] = result.getInCell()[empty.getY()][empty.getX() - 1];
-                result.getInCell()[empty.getY()][empty.getX() - 1] = EMPTY;
+                result.getVertex()[empty.getY()][empty.getX()] = result.getVertex()[empty.getY()][empty.getX() - 1];
+                result.getVertex()[empty.getY()][empty.getX() - 1] = EMPTY;
                 break;
             }
         }
@@ -86,7 +86,7 @@ public class Cell implements Comparable<Cell>{
     public void Print() {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                System.out.print(inCell[i][j] + "   ");
+                System.out.print(vertex[i][j] + "   ");
             }
             System.out.print("\n");
         }
@@ -95,7 +95,7 @@ public class Cell implements Comparable<Cell>{
     public Position getEmpty() {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                if (inCell[i][j] == EMPTY) {
+                if (vertex[i][j] == EMPTY) {
                     return new Position(j, i);
                 }
             }
@@ -104,12 +104,12 @@ public class Cell implements Comparable<Cell>{
         return null;
     }
 
-    public Cell getParent() {
+    public State getParent() {
         return parent;
     }
 
-    public int[][] getInCell() {
-        return inCell;
+    public int[][] getVertex() {
+        return vertex;
     }
 
     public int getDeep() {
@@ -126,11 +126,11 @@ public class Cell implements Comparable<Cell>{
             return false;
         }
 
-        int[][] eqInCell = ((Cell) object).getInCell();
+        int[][] eqInCell = ((State) object).getVertex();
 
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                if (inCell[i][j] != eqInCell[i][j]) {
+                if (vertex[i][j] != eqInCell[i][j]) {
                     return false;
                 }
             }
@@ -185,19 +185,19 @@ public class Cell implements Comparable<Cell>{
      * @throws ClassCastException   if the specified object's type prevents it
      *                              from being compared to this object.
      */
-    public int compareTo(Cell o) {
+    public int compareTo(State o) {
         //if (this.equals(o)) {
         //    return 0;
         //}
 
-        int[][] eqInCell = o.getInCell();
+        int[][] eqInCell = o.getVertex();
 
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                if (inCell[i][j] < eqInCell[i][j]) {
+                if (vertex[i][j] < eqInCell[i][j]) {
                     return -1;
                 }
-                if (inCell[i][j] > eqInCell[i][j]) {
+                if (vertex[i][j] > eqInCell[i][j]) {
                     return 1;
                 }
             }

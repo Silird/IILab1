@@ -4,20 +4,21 @@ import java.util.*;
 public class SearchWidth {
     private boolean step;
     private int iteration;
-    private List<Cell> used = new ArrayList<Cell>();
-    private Queue<Cell> queue = new LinkedList<Cell>();
-    private Cell target;
+    private List<State> used = new ArrayList<State>();
+    private Queue<State> queue = new LinkedList<State>();
+    private State target;
+    private int maxSize;
 
-    public SearchWidth(Cell target, boolean step) {
+    public SearchWidth(State target, boolean step) {
         this.target = target;
         this.step = step;
     }
 
-    public SearchWidth(Cell target) {
+    public SearchWidth(State target) {
         this(target, false);
     }
 
-    public void Start(Cell start) {
+    public void Start(State start) {
         queue.add(start);
         iteration = 0;
         boolean cont = true;
@@ -25,26 +26,27 @@ public class SearchWidth {
             cont = Open();
         }
         System.out.println("Решения не найдено");
+        System.out.println("\nЁмкостная сложность: " + maxSize);
     }
 
     private boolean Open() {
         if (!queue.isEmpty()) {
-            Cell currentCell = queue.poll();
-            used.add(currentCell);
+            State currentState = queue.poll();
+            used.add(currentState);
             iteration++;
             if (iteration%1000 == 0) {
                 System.out.println("-------------------------Итерация № " + iteration + "-------------------------------");
             }
             if (step) {
                 System.out.println("Раскрывается вершина:\n");
-                currentCell.Print();
+                currentState.Print();
 
                 System.out.println("\nВновь открытые:\n");
             }
-            Add(currentCell.Move(Cell.UP));
-            Add(currentCell.Move(Cell.RIGHT));
-            Add(currentCell.Move(Cell.DOWN));
-            Add(currentCell.Move(Cell.LEFT));
+            Add(currentState.Move(State.UP));
+            Add(currentState.Move(State.RIGHT));
+            Add(currentState.Move(State.DOWN));
+            Add(currentState.Move(State.LEFT));
 
             PrintQueue();
 
@@ -59,48 +61,53 @@ public class SearchWidth {
                     ex.printStackTrace();
                 }
             }
+
+            if (maxSize < (queue.size() + used.size())) {
+                maxSize = queue.size() + used.size();
+            }
             return true;
         }
         return false;
     }
 
-    private void Add(Cell cell) {
-        if (cell != null) {
-            if (cell.equals(target)) {
-                End(cell);
+    private void Add(State state) {
+        if (state != null) {
+            if (state.equals(target)) {
+                End(state);
             }
-            if (!used.contains(cell) && !queue.contains(cell)) {
-                queue.add(cell);
+            if (!used.contains(state) && !queue.contains(state)) {
+                queue.add(state);
                 if (step) System.out.println("Добавляется в очередь:");
             }
             else {
                 if (step) System.out.println("Не добавляется в очередь:");
             }
-            if (step) cell.Print();
+            if (step) state.Print();
         }
     }
 
     private void PrintQueue() {
         if (step) {
             System.out.println("\nВершины, ожидающие открытия:\n");
-            for (Cell cell : queue) {
-                cell.Print();
+            for (State state : queue) {
+                state.Print();
                 System.out.println();
             }
         }
     }
 
-    private void End(Cell cell) {
-        Stack<Cell> path = new Stack<Cell>();
+    private void End(State state) {
+        Stack<State> path = new Stack<State>();
         System.out.println("Найдено решение:\n");
-        cell.Print();
-        path.add(cell);
-        Cell tmp = cell.getParent();
+        state.Print();
+        path.add(state);
+        State tmp = state.getParent();
         while (tmp != null) {
             path.add(tmp);
             tmp = tmp.getParent();
         }
-        System.out.println("\nНайдено решение в " + cell.getDeep() + " шаг/а/ов");
+        System.out.println("\nНайдено решение в " + state.getDeep() + " шаг/а/ов");
+        System.out.println("\nЁмкостная сложность: " + maxSize);
         System.out.println("За " + iteration + " итераций");
         System.out.println("Путь:\n");
 
